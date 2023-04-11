@@ -10,7 +10,8 @@
           <input type="submit" value="log in" v-on:click="login">
       </div>
 
-      <a>username - {{ username }}, password - {{ password }}</a>
+      <!-- <a>username - {{ username }}, password - {{ password }}</a> -->
+      <a>{{ message }}</a>
     </div>
   </template>
   
@@ -20,7 +21,8 @@
         data: function() {
             return {
                 password: '',
-                username: ''
+                username: '',
+                message: ''
             }
         },
         methods: {
@@ -29,20 +31,54 @@
                     password: this.password,
                     username: this.username
                     });
-                console.log(json);
-                let xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:8080/login');
-                xhr.responseType = 'json';
-                xhr.send(json);
+                
 
-                xhr.onload = function() {
-                    if (xhr.status != 200) {
-                        const response = xhr.response;
-                        this.message = response;
-                    } else {
-                        this.$router.push({name: 'home'});
+                fetch('http://localhost:8080/login', {
+                method: 'POST', 
+                body: json, 
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                    },
+                })
+                .then(function (response) {
+                    return response.json();
+                    }.bind(this))
+                .then(function (data) {
+                    if (data.error !== null) {
+                        this.message = data.error;
                     }
-                }
+
+                    if (data.error === null) {
+                        fetch('http://localhost:8080/about', {
+                            method: 'GET',
+                            headers: {
+                                'Authorization' : `Bearer ${data.token}`
+                            }
+                        })
+                        .then(function (response) {
+                            return response.json();
+                            }.bind(this))
+                        .then(function(data) {
+                            if (Object.hasOwn(data, 'message')) {
+                                this.message = data.message;
+                            } 
+                            else {
+                                const user = data.data;
+                                this.$router.push({
+                                name: 'home',
+                                query: {
+                                    id: user.id,
+                                    username: user.username,
+                                    avatar: user.avatar,
+                                    about: user.about
+                                    }
+                                });
+                            }
+                        }.bind(this));
+
+                       
+                    }
+                }.bind(this));
             }
         }
     }
