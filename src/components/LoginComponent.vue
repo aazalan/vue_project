@@ -9,8 +9,6 @@
           <br>
           <input type="submit" value="log in" v-on:click="login">
       </div>
-
-      <!-- <a>username - {{ username }}, password - {{ password }}</a> -->
       <a>{{ message }}</a>
     </div>
   </template>

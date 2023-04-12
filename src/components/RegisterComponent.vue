@@ -7,10 +7,8 @@
           <br>
           <input type="password" placeholder="Password" v-model="password">
           <br>
-          <input type="submit" value="log in" v-on:click="login">
+          <input type="submit" value="Registrate" v-on:click="login">
       </div>
-
-      <!-- <a>username - {{ username }}, password - {{ password }}</a> -->
       <a>{{ message }}</a>
     </div>
   </template>

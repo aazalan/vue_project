@@ -22,7 +22,6 @@
                 username: this.$route.query.username,
                 avatar: this.$route.query.avatar,
                 about: this.$route.query.about,
-                //dataIsSet: this.isSet()
             }
         }
     }
